@@ -1,0 +1,1 @@
+Apply homelab Icinga configs
