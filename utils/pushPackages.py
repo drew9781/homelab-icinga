@@ -89,21 +89,25 @@ else:
         if os.path.isdir(dirpath) and dirname not in [".git", "utils", ".gitsecret", "secrets"]:
             packages.append({"name": dirname, "path": dirpath})
 
+print(packages)
 for package in packages:
     print("Doing package "+ package['name'])
-    fileList = glob.glob(package['path']+"/*conf")
+    os.chdir(package['path'])
+    fileList = glob.glob("**/*conf", recursive=True)
+    print(fileList)
     data = {}
     for filePath in fileList:
         with open(filePath, 'r') as f:
-            data["files."+filePath] = f.read().replace('\n','')
+            data[filePath] = f.read()
 
+    print(data)
     fnret = icinga.config.list_packages()
     for package in fnret['results']:
         if package['name'] == package['name']:
             exists = 1
 
     if not exists:
-        fnret = icinga.config.create_package(package_name=package['name'])
+        fnret = icinga.config.create_package(package['name'])
         print(fnret)
     else:
         print("already exists")
